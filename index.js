@@ -94,7 +94,7 @@ Slider.prototype.interpolate = function (value) {
 Slider.prototype.set = function (value) {
     value = Math.max(this.min, Math.min(this.max, value));
     var x = (value - this.min) / (this.max - this.min);
-    this.turtle.style.left = x * this._elementWidth();
+    this.turtle.style.left = x * this._elementWidth() + 'px';
     value = Math.round(value * 1e10) / 1e10;
     this.emit('value', value);
 };
