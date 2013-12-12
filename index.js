@@ -44,24 +44,50 @@ function Slider (opts) {
     
     var down = false;
     
-    turtle.addEventListener('mousedown', function (ev) {
+    function start (ev) {
+        var clientX = 0;
+        
+        if (typeof ev.touches !== 'undefined') {
+            clientX = ev.touches[0].clientX;
+        } else {
+            clientX = ev.clientX;
+        }
+
         ev.preventDefault();
         turtle.className = 'turtle pressed';
         down = {
-            x: ev.clientX - root.offsetLeft - turtle.offsetLeft
+            x: clientX - root.offsetLeft - turtle.offsetLeft
         }
-    });
+    }
+
+    turtle.addEventListener('mousedown', start);
+    turtle.addEventListener('touchstart', start);
     root.addEventListener('mousedown', function (ev) {
         ev.preventDefault();
     });
+    root.addEventListener('touchend', function (ev) {
+        ev.preventDefault();
+    });
+
+
     window.addEventListener('mouseup', mouseup);
     window.addEventListener('mousemove', onmove);
+    window.addEventListener('touchend', mouseup);
+    window.addEventListener('touchmove', onmove);
     
     function onmove (ev) {
+        var clientX = 0;
+
+        if (typeof ev.touches !== 'undefined') {
+            clientX = ev.touches[0].clientX;
+        } else {
+            clientX = ev.clientX;
+        }
+
         ev.preventDefault();
         if (!down) return;
         var w = self._elementWidth();
-        var x = Math.max(0, Math.min(w, ev.clientX - root.offsetLeft - down.x));
+        var x = Math.max(0, Math.min(w, clientX - root.offsetLeft - down.x));
         var value = x / w;
         if (isNaN(value)) return;
         self.set(self.interpolate(value));
