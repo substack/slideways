@@ -84,7 +84,6 @@ function Slider (opts) {
             clientX = ev.clientX;
         }
 
-        ev.preventDefault();
         if (!down) return;
         var w = self._elementWidth();
         var x = Math.max(0, Math.min(w, clientX - root.offsetLeft - down.x));
