@@ -1,7 +1,15 @@
 var hyperglue = require('hyperglue');
 var EventEmitter = require('events').EventEmitter;
+var domevent = require('dom-events');
+var computedStyle = require('computed-style');
 var html = require('./static/html');
 var css = require('./static/css');
+
+function preventDefault (e) {
+    if (e.preventDefault) return e.preventDefault();
+
+    e.returnValue = false;
+}
 
 module.exports = Slider;
 var insertedCss = false;
@@ -53,27 +61,28 @@ function Slider (opts) {
             clientX = ev.clientX;
         }
 
-        ev.preventDefault();
+        preventDefault(ev);
         turtle.className = 'turtle pressed';
         down = {
             x: clientX - root.offsetLeft - turtle.offsetLeft
         }
     }
 
-    turtle.addEventListener('mousedown', start);
-    turtle.addEventListener('touchstart', start);
-    root.addEventListener('mousedown', function (ev) {
-        ev.preventDefault();
+    domevent.on(turtle, 'mousedown', start);
+    domevent.on(turtle, 'touchstart', start);
+
+    domevent.on(root, 'mousedown', function (ev) {
+        preventDefault(ev);
     });
-    root.addEventListener('touchend', function (ev) {
-        ev.preventDefault();
+    domevent.on(root, 'touchend', function (ev) {
+        preventDefault(ev);
     });
 
-
-    window.addEventListener('mouseup', mouseup);
-    window.addEventListener('mousemove', onmove);
-    window.addEventListener('touchend', mouseup);
-    window.addEventListener('touchmove', onmove);
+    domevent.on(document, 'mouseup', mouseup);
+    domevent.on(document, 'mousemove', onmove);
+    domevent.on(document, 'onmousemove', onmove);
+    domevent.on(document, 'touchend', mouseup);
+    domevent.on(document, 'touchmove', onmove);
     
     function onmove (ev) {
         var clientX = 0;
@@ -125,13 +134,11 @@ Slider.prototype.set = function (value) {
 };
 
 Slider.prototype._elementWidth = function () {
-    var style = {
-        root: window.getComputedStyle(this.element),
-        turtle: window.getComputedStyle(this.turtle)
-    };
-    return num(style.root.width) - num(style.turtle.width)
-        - num(style.turtle['border-width'])
-    ;
+    var rootWidth = this.element.offsetWidth;
+    var turtleWidth = this.turtle.offsetWidth;
+    var turtleBorder = computedStyle(this.turtle, 'border-width');
+
+    return num(rootWidth) - num(turtleWidth) - num(turtleBorder);
 };
 
 function num (s) {

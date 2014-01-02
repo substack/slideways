@@ -1,27 +1,29 @@
 {
-    "name" : "slideways",
-    "version" : "0.0.2",
-    "description" : "horizontal slider control widget",
-    "main" : "index.js",
-    "dependencies" : {
-        "hyperglue" : "~0.1.1"
-    },
-    "repository" : {
-        "type" : "git",
-        "url" : "git://github.com/substack/slideways.git"
-    },
-    "homepage" : "https://github.com/substack/slideways",
-    "keywords" : [
-        "slide",
-        "ui",
-        "browser",
-        "browserify",
-        "dom"
-    ],
-    "author" : {
-        "name" : "James Halliday",
-        "email" : "mail@substack.net",
-        "url" : "http://substack.net"
-    },
-    "license" : "MIT"
+  "name": "slideways",
+  "version": "0.0.2",
+  "description": "horizontal slider control widget",
+  "main": "index.js",
+  "dependencies": {
+    "hyperglue": "~0.1.1",
+    "dom-events": "~0.1.1",
+    "computed-style": "~0.1.3"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/substack/slideways.git"
+  },
+  "homepage": "https://github.com/substack/slideways",
+  "keywords": [
+    "slide",
+    "ui",
+    "browser",
+    "browserify",
+    "dom"
+  ],
+  "author": {
+    "name": "James Halliday",
+    "email": "mail@substack.net",
+    "url": "http://substack.net"
+  },
+  "license": "MIT"
 }
