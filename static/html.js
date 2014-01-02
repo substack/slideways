@@ -1,6 +1,6 @@
 module.exports = [
   '<div class="slideways">',
     '<div class="runner"></div>',
-    '<div class="turtle"></div>',
+    '<button class="turtle"></button>',
   '</div>'
 ].join('\n')

@@ -1,7 +1,15 @@
 var hyperglue = require('hyperglue');
 var EventEmitter = require('events').EventEmitter;
+var domevent = require('dom-events');
+var computedStyle = require('computed-style');
 var html = require('./static/html');
 var css = require('./static/css');
+
+function preventDefault (e) {
+    if (e.preventDefault) return e.preventDefault();
+
+    e.returnValue = false;
+}
 
 module.exports = Slider;
 var insertedCss = false;
@@ -44,24 +52,50 @@ function Slider (opts) {
     
     var down = false;
     
-    turtle.addEventListener('mousedown', function (ev) {
-        ev.preventDefault();
+    function start (ev) {
+        var clientX = 0;
+        
+        if (typeof ev.touches !== 'undefined') {
+            clientX = ev.touches[0].clientX;
+        } else {
+            clientX = ev.clientX;
+        }
+
+        preventDefault(ev);
         turtle.className = 'turtle pressed';
         down = {
-            x: ev.clientX - root.offsetLeft - turtle.offsetLeft
+            x: clientX - root.offsetLeft - turtle.offsetLeft
         }
+    }
+
+    domevent.on(turtle, 'mousedown', start);
+    domevent.on(turtle, 'touchstart', start);
+
+    domevent.on(root, 'mousedown', function (ev) {
+        preventDefault(ev);
     });
-    root.addEventListener('mousedown', function (ev) {
-        ev.preventDefault();
+    domevent.on(root, 'touchend', function (ev) {
+        preventDefault(ev);
     });
-    window.addEventListener('mouseup', mouseup);
-    window.addEventListener('mousemove', onmove);
+
+    domevent.on(document, 'mouseup', mouseup);
+    domevent.on(document, 'mousemove', onmove);
+    domevent.on(document, 'onmousemove', onmove);
+    domevent.on(document, 'touchend', mouseup);
+    domevent.on(document, 'touchmove', onmove);
     
     function onmove (ev) {
-        ev.preventDefault();
+        var clientX = 0;
+
+        if (typeof ev.touches !== 'undefined') {
+            clientX = ev.touches[0].clientX;
+        } else {
+            clientX = ev.clientX;
+        }
+
         if (!down) return;
         var w = self._elementWidth();
-        var x = Math.max(0, Math.min(w, ev.clientX - root.offsetLeft - down.x));
+        var x = Math.max(0, Math.min(w, clientX - root.offsetLeft - down.x));
         var value = x / w;
         if (isNaN(value)) return;
         self.set(self.interpolate(value));
@@ -94,19 +128,17 @@ Slider.prototype.interpolate = function (value) {
 Slider.prototype.set = function (value) {
     value = Math.max(this.min, Math.min(this.max, value));
     var x = (value - this.min) / (this.max - this.min);
-    this.turtle.style.left = x * this._elementWidth();
+    this.turtle.style.left = x * this._elementWidth() + 'px';
     value = Math.round(value * 1e10) / 1e10;
     this.emit('value', value);
 };
 
 Slider.prototype._elementWidth = function () {
-    var style = {
-        root: window.getComputedStyle(this.element),
-        turtle: window.getComputedStyle(this.turtle)
-    };
-    return num(style.root.width) - num(style.turtle.width)
-        - num(style.turtle['border-width'])
-    ;
+    var rootWidth = this.element.offsetWidth;
+    var turtleWidth = this.turtle.offsetWidth;
+    var turtleBorder = computedStyle(this.turtle, 'border-width');
+
+    return num(rootWidth) - num(turtleWidth) - num(turtleBorder);
 };
 
 function num (s) {
