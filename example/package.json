@@ -1,0 +1,15 @@
+{
+  "name": "example",
+  "private": true,
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "start": "watchify main.js -dv -o static/bundle.js & node server.js"
+  },
+  "license": "ISC",
+  "dependencies": {
+    "ecstatic": "^0.5.5",
+    "watchify": "^2.0.0"
+  }
+}
