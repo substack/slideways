@@ -1,6 +1,6 @@
 {
     "name" : "slideways",
-    "version" : "0.0.4",
+    "version" : "1.0.0",
     "description" : "horizontal slider control widget",
     "main" : "index.js",
     "dependencies" : {
