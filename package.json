@@ -4,8 +4,10 @@
     "description" : "horizontal slider control widget",
     "main" : "index.js",
     "dependencies" : {
-        "hyperglue" : "~0.1.1",
-        "inherits": "~2.0.1"
+        "brfs": "~1.2.0",
+        "domify": "~1.3.1",
+        "inherits": "~2.0.1",
+        "insert-css": "~0.2.0"
     },
     "repository" : {
         "type" : "git",
@@ -23,6 +25,11 @@
         "name" : "James Halliday",
         "email" : "mail@substack.net",
         "url" : "http://substack.net"
+    },
+    "browserify": {
+        "transform": [
+            "brfs"
+        ]
     },
     "license" : "MIT"
 }

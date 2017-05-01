@@ -1,8 +1,11 @@
-var hyperglue = require('hyperglue');
+var domify = require('domify');
 var EventEmitter = require('events').EventEmitter;
+var fs = require('fs');
 var inherits = require('inherits');
-var html = require('./static/html');
-var css = require('./static/css');
+var insertCss = require('insert-css');
+
+var html = fs.readFileSync(__dirname + '/index.html', 'utf8');
+var css = fs.readFileSync(__dirname + '/index.css', 'utf8');
 
 module.exports = Slider;
 inherits(Slider, EventEmitter);
@@ -28,19 +31,11 @@ function Slider (opts) {
         }
         else self.set(0);
     });
-    
-    if (!insertedCss && opts.insertCss !== false) {
-        var style = document.createElement('style');
-        style.appendChild(document.createTextNode(css));
-        if (document.head.childNodes.length) {
-            document.head.insertBefore(style, document.head.childNodes[0]);
-        }
-        else {
-            document.head.appendChild(style);
-        }
+    if (!insertedCss) {
+        insertCss(css, { prepend: true });
         insertedCss = true;
     }
-    var root = this.element = hyperglue(html);
+    var root = this.element = domify(html);
     
     var turtle = this.turtle = root.querySelector('.turtle');
     var runner = root.querySelector('.runner');

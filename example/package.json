@@ -1,0 +1,15 @@
+{
+    "name": "example",
+    "private": true,
+    "version": "1.0.0",
+    "description": "",
+    "main": "server.js",
+    "scripts": {
+        "start": "browserify main.js > static/bundle.js && node server.js"
+    },
+    "license": "ISC",
+    "dependencies": {
+        "browserify": "^5.12.1",
+        "ecstatic": "^0.5.5"
+    }
+}
